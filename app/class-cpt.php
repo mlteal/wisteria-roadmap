@@ -45,7 +45,7 @@ class Cpt {
 			'label'               => __( 'Roadmap Item', 'ml-wrm' ),
 			'description'         => __( 'Roadmap items', 'ml-wrm' ),
 			'labels'              => $labels,
-			'supports'            => array( 'title', 'comments', 'revisions', 'custom-fields' ),
+			'supports'            => array( 'title', 'editor','comments', 'revisions', 'custom-fields' ),
 			'taxonomies'          => array( 'project' ),
 			'hierarchical'        => false,
 			'public'              => true,
@@ -90,7 +90,7 @@ class Cpt {
 		);
 		$args   = array(
 			'labels'            => $labels,
-			'hierarchical'      => false,
+			'hierarchical'      => true,
 			'public'            => true,
 			'show_ui'           => true,
 			'show_admin_column' => true,
