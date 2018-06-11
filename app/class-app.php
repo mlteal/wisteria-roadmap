@@ -19,6 +19,7 @@ class App extends Abstract_Plugin {
 		new Cpt();
 		new Meta();
 		new Api\Base();
+		new React_Wp_Scripts();
 	} // END public function __construct
 
 	public function init() {
