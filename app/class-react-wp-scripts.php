@@ -12,7 +12,19 @@ class React_Wp_Scripts {
 	}
 
 	function enqueue_react_assets() {
-		$this->enqueue_assets( plugin_dir_path( __FILE__ ) . 'wisteria/' );
+		$assets_path = plugin_dir_path( __FILE__ ) . 'wisteria/';
+
+
+		wp_register_script( 'wisteria-api', plugin_dir_url( __FILE__ ) . 'wisteria/src/settings.js', ['jquery'] );
+		wp_localize_script( 'wisteria-api', 'wisteriaApiSettings',
+			array(
+				'root'  => esc_url_raw( rest_url() . API\Base::NAMESPACE ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+			)
+		);
+		wp_enqueue_script( 'wisteria-api' );
+
+		$this->enqueue_assets( $assets_path );
 	}
 
 	/**
@@ -149,7 +161,7 @@ class React_Wp_Scripts {
 		$defaults = [
 			'base_url' => '',
 			'handle'   => basename( $directory ),
-			'scripts'  => [],
+			'scripts'  => ['wisteria-api'],
 			'styles'   => [],
 		];
 

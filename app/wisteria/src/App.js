@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import '../node_modules/bulma/css/bulma.min.css';
 import './App.css';
+import Roadmap from "./components/Roadmap";
+import moment from 'moment';
 
 class App extends Component {
   render() {
+
+      const viewStart = moment().subtract(2, 'week');
+      const viewEnd = moment().add(5, 'month');
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+          <Roadmap
+              viewStart={viewStart}
+              viewEnd={viewEnd}
+          />
       </div>
     );
   }
