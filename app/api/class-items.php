@@ -54,12 +54,12 @@ class Items extends \WP_REST_Posts_Controller {
 			array(
 				'methods'  => 'PATCH',
 				'callback' => array( $this, 'update_item' ),
-				'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				'permission_callback' => array( $this, 'create_item_permissions_check' ),
 			),
 			array(
 				'methods'             => \WP_REST_Server::DELETABLE,
 				'callback'            => array( $this, 'delete_item' ),
-				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+				'permission_callback' => array( $this, 'delete_item_permissions_check' ), // hackaround while deletepermcheck isnt playing nice
 				'args'                => array(
 					'force' => array(
 						'type'        => 'boolean',

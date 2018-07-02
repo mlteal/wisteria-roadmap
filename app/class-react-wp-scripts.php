@@ -1,6 +1,8 @@
 <?php
 /**
  * Entrypoint for the theme.
+ *
+ * Pulled from Human Made's https://github.com/humanmade/react-wp-scripts
  */
 
 namespace Wisteria;
@@ -96,25 +98,8 @@ class React_Wp_Scripts {
 	 * @return string|null
 	 */
 	function infer_base_url( string $path ) {
-		$path = wp_normalize_path( $path );
-
-		$stylesheet_directory = wp_normalize_path( get_stylesheet_directory() );
-		if ( strpos( $path, $stylesheet_directory ) === 0 ) {
-			return get_theme_file_uri( substr( $path, strlen( $stylesheet_directory ) ) );
-		}
-
-		$template_directory = wp_normalize_path( get_template_directory() );
-		if ( strpos( $path, $template_directory ) === 0 ) {
-			return get_theme_file_uri( substr( $path, strlen( $template_directory ) ) );
-		}
-
-		// Any path not known to exist within a theme is treated as a plugin path.
-		$plugin_path = $this->get_plugin_basedir_path();
-		if ( strpos( $path, $plugin_path ) === 0 ) {
-			return plugin_dir_url( __FILE__ ) . substr( $path, strlen( $plugin_path ) + 1 );
-		}
-
-		return '';
+		// Removed the original magic from here
+		return plugin_dir_url( __FILE__ ) . 'wisteria';
 	}
 
 	/**
