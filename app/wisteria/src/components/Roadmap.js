@@ -75,6 +75,21 @@ export class Roadmap extends Component {
 		makeApiAction( 'items', 'PATCH', itemId, resized )
 	}
 
+	handleItemDelete = ( itemId ) => {
+		const { items } = this.state;
+
+		this.setState( {
+			items: items.map(
+				item =>
+					item.id === itemId
+						? {}
+						: item
+			)
+		} );
+
+		makeApiAction( 'items', 'DELETE', itemId )
+	}
+
 	handleFormSubmit = (event, values) => {
 		setTimeout(() => {
 			const submitValues = {
@@ -87,7 +102,7 @@ export class Roadmap extends Component {
 			const r = makeApiAction('items', 'POST', null, submitValues);
 
 			// TODO: only add to roadmap if API call success
-			// console.log( 'api response', r );
+			console.log( 'api response', r );
 
 			// on success, update the roadmap
 			const items = [...this.state.items];
@@ -103,8 +118,9 @@ export class Roadmap extends Component {
 		}, 1000);
 	}
 
+
 	componentDidMount() {
-		fetch( 'http://roadmap.test/wp-json/wisteria/v1/projects/' )
+		makeApiAction('projects', 'GET')
 			.then( response => response.json() )
 			.then( groups => this.setState( { groups } ) )
 			.then( groupOptions => this.setState( {
@@ -118,7 +134,7 @@ export class Roadmap extends Component {
 				} )
 			} ) );
 
-		fetch( 'http://roadmap.test/wp-json/wisteria/v1/items/' )
+		makeApiAction('items', 'GET')
 			.then( response => response.json() )
 			.then( items => this.setState( {
 				items: items.map( item => {
@@ -148,6 +164,8 @@ export class Roadmap extends Component {
 					onItemResize={this.handleItemResize}
 					onCanvasDoubleClick={this.handleItemAdd}
 					stackItems={true}
+					itemHeightRatio={.98}
+					lineHeight={45}
 				/>
 				<NewItemForm
 					groupOptions={this.state.groupOptions}

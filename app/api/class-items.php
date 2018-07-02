@@ -29,11 +29,12 @@ class Items extends \WP_REST_Posts_Controller {
 			array(
 				'methods'  => 'GET',
 				'callback' => array( $this, 'get_items' ),
+				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			),
 			array(
 				'methods'  => \WP_REST_Server::CREATABLE,
 				'callback' => array( $this, 'create_item' ),
-//				'permission_callback' => array( $this, 'create_item_permissions_check' ),
+				'permission_callback' => array( $this, 'create_item_permissions_check' ),
 				'args'     => array(),
 			),
 		) );
@@ -48,12 +49,12 @@ class Items extends \WP_REST_Posts_Controller {
 			array(
 				'methods'  => \WP_REST_Server::READABLE,
 				'callback' => array( $this, 'get_item' ),
-//				'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				'permission_callback' => array( $this, 'get_item_permissions_check' ),
 			),
 			array(
 				'methods'  => 'PATCH',
 				'callback' => array( $this, 'update_item' ),
-//				'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				'permission_callback' => array( $this, 'update_item_permissions_check' ),
 			),
 			array(
 				'methods'             => \WP_REST_Server::DELETABLE,
@@ -102,6 +103,25 @@ class Items extends \WP_REST_Posts_Controller {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Checks if a given request has access to read posts.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param  \WP_REST_Request $request Full details about the request.
+	 * @return true|\WP_Error True if the request has read access, \WP_Error object otherwise.
+	 */
+	public function get_items_permissions_check( $request ) {
+
+		$post_type = get_post_type_object( $this->post_type );
+
+		if ( ! current_user_can( $post_type->cap->read ) ) {
+			return new \WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to see posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
 	}
 
 	public function get_item( $request ) {

@@ -1,58 +1,61 @@
 const apiRoot = window.wisteriaApiSettings.root;
+const authFetch = function( url, useMethod, useBody = '' ) {
+	if (useBody.length > 0) {
+		return fetch( new Request( url, {
+			method: useMethod,
+			credentials: 'same-origin',
+			headers: new Headers( {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': window.wisteriaApiSettings.nonce
+			} ),
+			body: useBody
+		} ) );
+	} else {
+		return fetch( new Request( url, {
+			method: useMethod,
+			credentials: 'same-origin',
+			headers: new Headers( {
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': window.wisteriaApiSettings.nonce
+			} ),
+		} ) );
+	}
+}
 
-export default function makeApiAction(endpoint = 'items', requestType, itemId = null, params = null ) {
-	switch (endpoint) {
+export default function makeApiAction( endpoint = 'items', requestType, itemId = null, params = null ) {
+	switch ( endpoint ) {
 		case 'items':
 			if ( 'POST' === requestType && itemId == null ) {
 				const url = apiRoot + '/items/';
-				
+
 				// Default options are marked with *
-				return fetch( url, {
-					body: JSON.stringify( params ), // must match 'Content-Type' header
-					method: 'POST', // *GET, POST, PUT, DELETE, etc.
-				} )
+				return authFetch( url, 'POST', JSON.stringify( params ) )
 					.then( response => response.json() ) // parses response to JSON
 					.catch( e => alert( 'Fail! That API item creation didn\'t go through. Refresh the page please.' ) )
 			} else if ( 'PATCH' === requestType ) {
 				const url = apiRoot + '/items/' + itemId;
 				const updateParams = {
 					...params,
-					start_time: params.start_time/1000,
-					end_time: params.end_time/1000,
+					start_time: params.start_time / 1000,
+					end_time: params.end_time / 1000,
 				};
 
-				// Default options are marked with *
-				return fetch( url, {
-					body: JSON.stringify( updateParams ), // must match 'Content-Type' header
-					// cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-					// credentials: 'same-origin', // include, same-origin, *omit
-					// headers: {
-					// 	'user-agent': 'Mozilla/4.0 MDN Example',
-					// 	'content-type': 'application/json'
-					// },
-					method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
-					// mode: 'cors', // no-cors, cors, *same-origin
-					// redirect: 'follow', // manual, *follow, error
-					// referrer: 'no-referrer', // *client, no-referrer
-				} )
+				return authFetch( url, 'PATCH', JSON.stringify( updateParams ) )
 					.then( response => response.json() ) // parses response to JSON
 					.catch( e => alert( 'Fail! That API update didn\'t go through. Refresh the page please.' ) )
 			} else if ( 'DELETE' === requestType ) {
 				const url = apiRoot + '/items/' + itemId;
-
-				// Default options are marked with *
-				return fetch( url, {
-					body: JSON.stringify( params ), // must match 'Content-Type' header
-					method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
-				} )
+				return authFetch( url, 'DELETE', JSON.stringify( params ) )
 					.then( response => response.json() ) // parses response to JSON
 					.catch( e => alert( 'Fail! That API update didn\'t go through. Refresh the page please.' ) )
+			} else {
+				const url = apiRoot + '/items/';
+				return authFetch( url, 'GET' );
 			}
-			break;
 		case 'projects':
-			return null;
+			const url = window.wisteriaApiSettings.root + '/projects/';
+			return authFetch( url, 'GET' );
 		default:
 			return null;
 	}
-
 }

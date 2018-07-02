@@ -15,6 +15,7 @@ class Projects extends \WP_REST_Controller {
 		register_rest_route( $this->namespace, $this->rest_base, array(
 			'methods'  => 'GET',
 			'callback' => array( $this, 'get_items' ),
+			'permission_callback' => array( $this, 'get_items_permissions_check' ),
 		) );
 	}
 
@@ -41,5 +42,24 @@ class Projects extends \WP_REST_Controller {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Checks if a given request has access to read posts.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param  \WP_REST_Request $request Full details about the request.
+	 * @return true|\WP_Error True if the request has read access, \WP_Error object otherwise.
+	 */
+	public function get_items_permissions_check( $request ) {
+
+		$post_type = get_post_type_object( Cpt::CPT_SLUG );
+
+		if ( ! current_user_can( $post_type->cap->read ) ) {
+			return new \WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to see posts in this post type.' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
 	}
 }
