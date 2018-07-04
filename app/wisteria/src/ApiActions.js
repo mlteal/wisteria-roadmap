@@ -47,10 +47,11 @@ export default function makeApiAction( endpoint = 'items', requestType, itemId =
 				const url = apiRoot + '/items/' + itemId;
 				return authFetch( url, 'DELETE', JSON.stringify( params ) )
 					.then( response => response.json() ) // parses response to JSON
-					.catch( e => alert( 'Fail! That API update didn\'t go through. Refresh the page please.' ) )
+					.catch( e => console.log( 'DELETE item:', 'It\'s possible that API update might not have go through. That said, this catch is finicky at the moment so YMMV ¯\\_(ツ)_/¯' ) )
 			} else {
 				const url = apiRoot + '/items/';
-				return authFetch( url, 'GET' );
+				return authFetch( url, 'GET' )
+					.catch( e => alert( 'There was a problem fetching the items. Le sigh.' ) );
 			}
 		case 'projects':
 			const url = window.wisteriaApiSettings.root + '/projects/';

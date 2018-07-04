@@ -76,18 +76,21 @@ export class Roadmap extends Component {
 	}
 
 	handleItemDelete = ( itemId ) => {
-		const { items } = this.state;
+		if ( window.confirm('Are you sure you want to delete?') ) {
+			// TODO: don't delete on API delete failure!
+			makeApiAction( 'items', 'DELETE', itemId );
 
-		this.setState( {
-			items: items.map(
-				item =>
-					item.id === itemId
-						? {}
-						: item
-			)
-		} );
+			const { items } = this.state;
 
-		makeApiAction( 'items', 'DELETE', itemId )
+			this.setState( {
+				items: items.map(
+					item =>
+						item.id === itemId
+							? {}
+							: item
+				)
+			} );
+		}
 	}
 
 	handleFormSubmit = (event, values) => {
@@ -163,6 +166,7 @@ export class Roadmap extends Component {
 					onItemMove={this.handleItemMove}
 					onItemResize={this.handleItemResize}
 					onCanvasDoubleClick={this.handleItemAdd}
+					onItemContextMenu={this.handleItemDelete}
 					stackItems={true}
 					itemHeightRatio={.98}
 					lineHeight={45}
