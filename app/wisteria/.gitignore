@@ -7,7 +7,7 @@
 /coverage
 
 # production
-/build
+# /build # we need to keep the build folder for the WP plugin
 
 # misc
 .DS_Store
