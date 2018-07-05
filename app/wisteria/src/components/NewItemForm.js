@@ -10,6 +10,7 @@ export class NewItemForm extends Component {
 	static propTypes = {
 		handleRoadmapSubmit: PropTypes.func,
 		groupOptions: PropTypes.array,
+		modalStatus: PropTypes.object,
 	};
 
 	defaultState = {
@@ -18,6 +19,9 @@ export class NewItemForm extends Component {
 		start_time: moment().add( 1, 'week' ),
 		end_time: moment().add( 2, 'week' ),
 		description: "",
+		modalStatus: {
+			isVisible: false,
+		},
 	};
 
 	state = {
@@ -43,60 +47,82 @@ export class NewItemForm extends Component {
 		event.preventDefault();
 	}
 
+	handleClose = ( event ) => {
+		console.log('handle close event');
+		const modalStatus = {...this.state.modalStatus}
+
+		console.log('initial state check', modalStatus.isVisible);
+
+		modalStatus.isVisible = !modalStatus.isVisible;
+		console.log('update string', modalStatus.isVisible);
+
+		this.setState( {
+			modalStatus: {
+				isVisible: true
+			}
+		}, function () {
+			console.log('after setting', this.state.modalStatus.isVisible);
+		});
+	}
+
 	componentDidMount() {
 
 	}
 
 	render() {
 		return (
-			<div>
-				<form className="p-5" onSubmit={this.handleSubmit}>
-					<h1>Hello this is form!</h1>
-					<div className="form-group">
-						<label>Title</label>
-						<input name="title" type="text"
-							   className={'form-control'}
-							   value={this.state.title}
-							   onChange={this.handleChange}
-						/>
-					</div>
-					<div className="form-group">
-						<label>Start Date</label>
-						<input name="start_time" type="text"
-							   className={'form-control'}
-							   value={this.state.start_time}
-							   onChange={this.handleChange}
-						/>
-					</div>
-					<div className="form-group">
-						<label>End Date</label>
-						<input name="start_time" type="text"
-							   className={'form-control'}
-							   value={this.state.end_time}
-							   onChange={this.handleChange}
-						/>
-					</div>
-					<div className="form-group">
-						<label>Group</label>
-						<VirtualizedSelect
-							name="group"
-							value={this.state.group.value}
-							options={this.props.groupOptions}
-							onChange={( group ) => this.setState( { group } )}
-						/>
-					</div>
-					<div className="form-group">
-						<label>Description</label>
-						<input name="description" type="text"
-							   className={'form-control'}
-							   value={this.state.description}
-							   onChange={this.handleChange}
-						/>
-					</div>
-					<button type="submit" className="btn btn-outline-primary" disabled={this.isSubmitting}>
-						{this.isSubmitting ? 'WAIT PLIZ' : 'CLICK ME'}
-					</button>
-				</form>
+			<div className={this.state.modalStatus.isVisible ? ' is-active' : 'modal'}>
+				<div className="modal-background"></div>
+				<div className="modal-content">
+					<form className="p-5" onSubmit={this.handleSubmit}>
+						<h1>Hello this is form!</h1>
+						<div className="form-group">
+							<label>Title</label>
+							<input name="title" type="text"
+								   className={'form-control'}
+								   value={this.state.title}
+								   onChange={this.handleChange}
+							/>
+						</div>
+						<div className="form-group">
+							<label>Start Date</label>
+							<input name="start_time" type="text"
+								   className={'form-control'}
+								   value={this.state.start_time}
+								   onChange={this.handleChange}
+							/>
+						</div>
+						<div className="form-group">
+							<label>End Date</label>
+							<input name="start_time" type="text"
+								   className={'form-control'}
+								   value={this.state.end_time}
+								   onChange={this.handleChange}
+							/>
+						</div>
+						<div className="form-group">
+							<label>Group</label>
+							<VirtualizedSelect
+								name="group"
+								value={this.state.group.value}
+								options={this.props.groupOptions}
+								onChange={( group ) => this.setState( { group } )}
+							/>
+						</div>
+						<div className="form-group">
+							<label>Description</label>
+							<input name="description" type="text"
+								   className={'form-control'}
+								   value={this.state.description}
+								   onChange={this.handleChange}
+							/>
+						</div>
+						<button type="submit" className="btn btn-outline-primary" disabled={this.isSubmitting}>
+							{this.isSubmitting ? 'WAIT PLZ' : 'CLICK ME'}
+						</button>
+					</form>
+				</div>
+				<button className="modal-close is-large" aria-label="close" onClick={this.handleClose}></button>
 			</div>
 		);
 	}

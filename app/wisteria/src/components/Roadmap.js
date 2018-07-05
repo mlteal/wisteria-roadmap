@@ -17,6 +17,9 @@ export class Roadmap extends Component {
 		formatted: 0,
 		groupOptions: [],
 		itemFormValues: [],
+		newItemModal: {
+			isVisible: false,
+		},
 	};
 
 	handleItemMove = ( itemId, dragTime, newGroupOrder ) => {
@@ -45,10 +48,20 @@ export class Roadmap extends Component {
 		makeApiAction( 'items', 'PATCH', itemId, updated );
 	}
 
-	handleItemAdd = ( group, time, e ) => {
+	handleNewItemModal = ( group, time, e ) => {
 		// const { items } = this.state;
 
-		alert( 'doubleclick! TODO: add an item' );
+		const newItemModal = {...this.state.newItemModal}
+
+		console.log('initial state check', newItemModal.isVisible);
+
+		newItemModal.isVisible = true;
+		console.log('update string', newItemModal.isVisible);
+
+		this.setState( this.state.newItemModal, function () {
+			console.log('after setting', this.state.newItemModal.isVisible);
+		});
+
 	}
 
 	handleItemResize = ( itemId, time, edge ) => {
@@ -72,7 +85,7 @@ export class Roadmap extends Component {
 		} );
 
 		resized = resized['0'];
-		makeApiAction( 'items', 'PATCH', itemId, resized )
+		makeApiAction( 'items', 'PATCH', itemId, resized );
 	}
 
 	handleItemDelete = ( itemId ) => {
@@ -165,7 +178,7 @@ export class Roadmap extends Component {
 					defaultTimeEnd={this.props.viewEnd}
 					onItemMove={this.handleItemMove}
 					onItemResize={this.handleItemResize}
-					onCanvasDoubleClick={this.handleItemAdd}
+					onCanvasDoubleClick={this.handleNewItemModal}
 					onItemContextMenu={this.handleItemDelete}
 					stackItems={true}
 					itemHeightRatio={.98}
@@ -174,6 +187,8 @@ export class Roadmap extends Component {
 				<NewItemForm
 					groupOptions={this.state.groupOptions}
 					handleRoadmapSubmit={this.handleFormSubmit}
+					modalStatus={this.state.newItemModal}
+					// newItemPreselections={this.state.newItem}
 				/>
 			</div>
 		);
