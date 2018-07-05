@@ -173,7 +173,8 @@ export class Roadmap extends Component {
 				<Timeline
 					groups={this.state.groups}
 					items={this.state.items}
-					traditionalZoom={true}
+					traditionalZoom={false}
+					canResize={true}
 					defaultTimeStart={this.props.viewStart}
 					defaultTimeEnd={this.props.viewEnd}
 					onItemMove={this.handleItemMove}
