@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// import '../node_modules/bulma/css/bulma.min.css';
-import './App.css';
 import Roadmap from "./components/Roadmap";
 import moment from 'moment';
 

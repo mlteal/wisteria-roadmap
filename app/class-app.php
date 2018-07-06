@@ -25,6 +25,7 @@ class App extends Abstract_Plugin {
 	public function init() {
 		do_action( get_called_class() . '_before_init' );
 		do_action( get_called_class() . '_after_init' );
+		add_action( 'wp_enqueue_scripts', array( get_called_class(), 'enqueue_scripts' ), 20 );
 	}
 
 	public function authenticated_init() {
@@ -36,6 +37,15 @@ class App extends Abstract_Plugin {
 
 	protected function defines_and_globals() {
 		// None yet.
+	}
+
+	public static function enqueue_scripts() {
+		wp_register_style(
+			'wisteria-react-calendar-timeline',
+			trailingslashit( plugin_dir_url( __FILE__ ) ) . 'assets/css/react-calendar-timeline.css'
+		);
+
+		wp_enqueue_style( 'wisteria-react-calendar-timeline' );
 	}
 
 } // END class
