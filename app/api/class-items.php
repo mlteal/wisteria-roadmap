@@ -90,8 +90,20 @@ class Items extends \WP_REST_Posts_Controller {
 		foreach ( $items as $item ) {
 			$terms = wp_get_post_terms( $item->ID, Cpt::TAX_SLUG );
 			$group = ! empty( $terms ) ? $terms[0]->term_id : 0;
-			$start = new \DateTime( get_post_meta( $item->ID, Meta::$start_slug, true ) );
-			$end   = new \DateTime( get_post_meta( $item->ID, Meta::$end_slug, true ) );
+			$start_time = get_post_meta( $item->ID, Meta::$start_slug, true );
+			$end_time = get_post_meta( $item->ID, Meta::$end_slug, true );
+
+			// In case we somehow recorded a bad date ¯\_(ツ)_/¯ skip it?
+			try {
+				$start = new \DateTime( $start_time );
+				$end   = new \DateTime( $end_time );
+			} catch ( \Exception $e ) {
+				error_log( 'item start time ' . $item->ID . ': ' .var_export( $start_time, true ) );
+				error_log( 'item end time ' . $item->ID . ': ' .var_export( $end_time, true ) );
+
+				continue;
+			}
+
 
 			$response[] = array(
 				'id'         => $item->ID,
