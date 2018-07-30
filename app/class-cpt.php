@@ -4,11 +4,13 @@ namespace Wisteria;
 
 class Cpt {
 	const CPT_SLUG = 'wrm_item';
-	const TAX_SLUG = 'wrm_project';
+	const PROJECT_TAX_SLUG = 'wrm_project';
+	const ROADMAP_TAX_SLUG = 'wrm_roadmap';
 
 	public function __construct() {
 		add_action( 'init', array( __CLASS__, 'register_cpt' ) );
-		add_action( 'init', array( __CLASS__, 'register_taxonomy' ) );
+		add_action( 'init', array( __CLASS__, 'register_projects_taxonomy' ) );
+		add_action( 'init', array( __CLASS__, 'register_roadmaps_taxonomy' ) );
 	}
 
 	public static function register_cpt() {
@@ -64,13 +66,13 @@ class Cpt {
 		register_post_type( static::CPT_SLUG, $args );
 	}
 
-	public static function register_taxonomy() {
+	public static function register_projects_taxonomy() {
 
 		$labels = array(
-			'name'                       => _x( 'Projects', 'Taxonomy General Name', 'ml-wrm' ),
-			'singular_name'              => _x( 'Project', 'Taxonomy Singular Name', 'ml-wrm' ),
+			'name'                       => _x( 'Projects', 'ml-wrm' ),
+			'singular_name'              => _x( 'Project', 'ml-wrm' ),
 			'menu_name'                  => __( 'Projects', 'ml-wrm' ),
-			'all_items'                  => __( 'All Projecta', 'ml-wrm' ),
+			'all_items'                  => __( 'All Projects', 'ml-wrm' ),
 			'parent_item'                => __( 'Parent Item', 'ml-wrm' ),
 			'parent_item_colon'          => __( 'Parent Item:', 'ml-wrm' ),
 			'new_item_name'              => __( 'New Project', 'ml-wrm' ),
@@ -97,6 +99,42 @@ class Cpt {
 			'show_in_nav_menus' => true,
 			'show_tagcloud'     => false,
 		);
-		register_taxonomy( static::TAX_SLUG, array( static::CPT_SLUG ), $args );
+		register_taxonomy( static::PROJECT_TAX_SLUG, array( static::CPT_SLUG ), $args );
+	}
+
+	public static function register_roadmaps_taxonomy() {
+
+		$labels = array(
+			'name'                       => _x( 'Roadmaps', 'ml-wrm' ),
+			'singular_name'              => _x( 'Roadmap', 'ml-wrm' ),
+			'menu_name'                  => __( 'Roadmaps', 'ml-wrm' ),
+			'all_items'                  => __( 'All Roadmaps', 'ml-wrm' ),
+			'parent_item'                => __( 'Parent Item', 'ml-wrm' ),
+			'parent_item_colon'          => __( 'Parent Item:', 'ml-wrm' ),
+			'new_item_name'              => __( 'New Roadmap', 'ml-wrm' ),
+			'add_new_item'               => __( 'Add New Roadmap', 'ml-wrm' ),
+			'edit_item'                  => __( 'Edit Roadmap', 'ml-wrm' ),
+			'update_item'                => __( 'Update Roadmap', 'ml-wrm' ),
+			'view_item'                  => __( 'View Roadmap', 'ml-wrm' ),
+			'separate_items_with_commas' => __( 'Separate items with commas', 'ml-wrm' ),
+			'add_or_remove_items'        => __( 'Add or remove items', 'ml-wrm' ),
+			'choose_from_most_used'      => __( 'Choose from the most used', 'ml-wrm' ),
+			'popular_items'              => __( 'Popular Items', 'ml-wrm' ),
+			'search_items'               => __( 'Search Items', 'ml-wrm' ),
+			'not_found'                  => __( 'Not Found', 'ml-wrm' ),
+			'no_terms'                   => __( 'No Roadmaps', 'ml-wrm' ),
+			'items_list'                 => __( 'Items list', 'ml-wrm' ),
+			'items_list_navigation'      => __( 'Items list navigation', 'ml-wrm' ),
+		);
+		$args   = array(
+			'labels'            => $labels,
+			'hierarchical'      => true,
+			'public'            => true,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_nav_menus' => true,
+			'show_tagcloud'     => false,
+		);
+		register_taxonomy( static::ROADMAP_TAX_SLUG, array( static::CPT_SLUG ), $args );
 	}
 }

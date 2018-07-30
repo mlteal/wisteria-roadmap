@@ -5,6 +5,7 @@ namespace Wisteria;
 class Meta {
 	static $start_slug = 'wrm_item_start';
 	static $end_slug = 'wrm_item_end';
+	static $percent_complete_slug = 'wrm_percent_complete';
 
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );
@@ -21,10 +22,11 @@ class Meta {
 
 	public static function metabox_controls( $post ) {
 		$meta             = get_post_meta( $post->ID );
-		$start_time = ! empty( $meta[ Meta::$start_slug ][0] ) ? new \DateTime( $meta[ Meta::$start_slug ][0] ) : '';
-		$start_time = is_object( $start_time ) ? $start_time->format( 'F j, Y' ) : $start_time;
-		$end_time   = ! empty( $meta[ Meta::$end_slug ][0] ) ? new \DateTime( $meta[ Meta::$end_slug ][0] ) : '';
-		$end_time   = is_object( $end_time ) ? $end_time->format( 'F j, Y' ) : $end_time;
+		$start_time       = ! empty( $meta[ Meta::$start_slug ][0] ) ? new \DateTime( $meta[ Meta::$start_slug ][0] ) : '';
+		$start_time       = is_object( $start_time ) ? $start_time->format( 'F j, Y' ) : $start_time;
+		$end_time         = ! empty( $meta[ Meta::$end_slug ][0] ) ? new \DateTime( $meta[ Meta::$end_slug ][0] ) : '';
+		$end_time         = is_object( $end_time ) ? $end_time->format( 'F j, Y' ) : $end_time;
+		$percent_complete = ! empty( $meta[ Meta::$percent_complete_slug ][0] ) ? $meta[ Meta::$percent_complete_slug ][0] : 0;
 
 		wp_nonce_field( 'wrm_control_meta_box', 'wrm_control_meta_box_nonce' ); // Always add nonce to your meta boxes!
 		?>
@@ -71,11 +73,37 @@ class Meta {
 						   value="<?php echo esc_attr( $end_time ); ?>"/>
 				</p>
 			</div>
+
+			<p>
+				<label for="<?php echo static::$percent_complete_slug; ?>">
+					<?php esc_html_e( 'Percent Complete:', 'wrm' ); ?>
+				</label>
+				<div id="<?php echo static::$percent_complete_slug; ?>-slider"></div>
+				<input type="number" class="hidden" id="<?php echo static::$percent_complete_slug; ?>" name="<?php echo static::$percent_complete_slug; ?>"
+					   value="<?php echo esc_attr( $percent_complete ); ?>"/>
+			</p>
 		</div>
 		<script type="text/javascript">
 			jQuery( document ).ready( function( $ ) {
 				jQuery( '#<?php echo static::$start_slug; ?>' ).datepicker();
 				jQuery( '#<?php echo static::$end_slug; ?>' ).datepicker();
+				$("#<?php echo static::$percent_complete_slug; ?>-slider").slider({
+					range: "min",
+					value: <?php echo esc_attr( $percent_complete ); ?>,
+					step: 1,
+					min: 0,
+					max: 100,
+					slide: function( event, ui ) {
+						$( "#<?php echo static::$percent_complete_slug; ?>" ).val( ui.value );
+					}
+				});
+
+
+				$("#<?php echo static::$percent_complete_slug; ?>").change(function () {
+					var value = this.value.substring(1);
+					$("#<?php echo static::$percent_complete_slug; ?>-slider").slider("value", parseInt(value));
+				});
+
 			} );
 		</script>
 		<?php
@@ -121,6 +149,10 @@ class Meta {
 		if ( isset( $_POST[ Meta::$end_slug ] ) ) {
 			static::update_end_time( $post_id, $_POST[ Meta::$end_slug ] );
 		}
+
+		if ( isset( $_POST[ Meta::$percent_complete_slug ] ) ) {
+			static::update_percent_complete( $post_id, $_POST[ Meta::$percent_complete_slug ] );
+		}
 	}
 
 	public static function update_start_time( $post_id, $start_time ) {
@@ -128,7 +160,7 @@ class Meta {
 			$start_time = sanitize_text_field( wp_unslash( $start_time ) );
 			$start_time = new \DateTime( $start_time );
 		} else {
-			$start_time = \DateTime::createFromFormat('U', (string) $start_time );
+			$start_time = \DateTime::createFromFormat( 'U', (string) $start_time );
 		}
 
 		return update_post_meta( $post_id, Meta::$start_slug, $start_time->format( 'Y-m-d H:i:s' ) );
@@ -139,14 +171,20 @@ class Meta {
 			$end_time = sanitize_text_field( wp_unslash( $end_time ) );
 			$end_time = new \DateTime( $end_time );
 		} else {
-			$end_time = \DateTime::createFromFormat('U', (string) $end_time );
+			$end_time = \DateTime::createFromFormat( 'U', (string) $end_time );
 		}
 
 
 		return update_post_meta( $post_id, Meta::$end_slug, $end_time->format( 'Y-m-d H:i:s' ) );
 	}
 
+	public static function update_percent_complete( $post_id, $percent_complete ) {
+
+		return update_post_meta( $post_id, Meta::$percent_complete_slug, (int) $percent_complete );
+	}
+
 	public static function admin_scripts() {
+		wp_enqueue_script( 'jquery-ui-slider' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_register_style( 'jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' );
 		wp_enqueue_style( 'jquery-ui' );

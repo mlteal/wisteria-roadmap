@@ -22,7 +22,7 @@ class Projects extends \WP_REST_Controller {
 	public function get_items( $request ) {
 		$response = [];
 		$args     = array(
-			'taxonomy'   => Cpt::TAX_SLUG,
+			'taxonomy'   => Cpt::PROJECT_TAX_SLUG,
 			'hide_empty' => false,
 		);
 

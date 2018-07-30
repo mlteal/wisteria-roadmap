@@ -22,6 +22,24 @@ export class Roadmap extends Component {
 		},
 	};
 
+	itemRenderer = ( { item, timelineContext } ) => {
+		// const { timelineWidth, visibleTimeStart, visibleTimeEnd } = timelineContext;
+		const { visibleTimeStart, visibleTimeEnd } = timelineContext;
+		const daysVisible = (visibleTimeEnd-visibleTimeStart)/86400000;
+		// If we're zoomed in enough, we can adjust the display accordingly
+		const itemDays = (item.end_time - item.start_time)/86400000;
+		const showSmallVersion = daysVisible > 120 && itemDays < 14 ? true : false;
+
+		return (
+			<div className='wrm-timeline-item'>
+				<span className="wrm-percent-complete" style={{
+					width:`${item.percent_complete}%`,
+				}}></span>
+				<div className={'wrm-item-content' + (showSmallVersion ? ' item-small' : ' item-large')}><span className='wrm-item-title'>{item.title}</span></div>
+			</div>
+		)
+	}
+
 	handleItemMove = ( itemId, dragTime, newGroupOrder ) => {
 		const { items, groups } = this.state;
 		const group = groups[newGroupOrder];
@@ -51,16 +69,16 @@ export class Roadmap extends Component {
 	handleNewItemModal = ( group, time, e ) => {
 		// const { items } = this.state;
 
-		const newItemModal = {...this.state.newItemModal}
+		const newItemModal = { ...this.state.newItemModal }
 
-		console.log('initial state check', newItemModal.isVisible);
+		console.log( 'initial state check', newItemModal.isVisible );
 
 		newItemModal.isVisible = true;
-		console.log('update string', newItemModal.isVisible);
+		console.log( 'update string', newItemModal.isVisible );
 
-		this.setState( this.state.newItemModal, function () {
-			console.log('after setting', this.state.newItemModal.isVisible);
-		});
+		this.setState( this.state.newItemModal, function() {
+			console.log( 'after setting', this.state.newItemModal.isVisible );
+		} );
 
 	}
 
@@ -89,7 +107,7 @@ export class Roadmap extends Component {
 	}
 
 	handleItemDelete = ( itemId ) => {
-		if ( window.confirm('Are you sure you want to delete?') ) {
+		if ( window.confirm( 'Are you sure you want to delete?' ) ) {
 			// TODO: don't delete on API delete failure!
 			makeApiAction( 'items', 'DELETE', itemId );
 
@@ -106,37 +124,36 @@ export class Roadmap extends Component {
 		}
 	}
 
-	handleFormSubmit = (event, values) => {
-		setTimeout(() => {
+	handleFormSubmit = ( event, values ) => {
+		setTimeout( () => {
 			const submitValues = {
 				...values,
-				start_time: values.start_time.format('YYYY-MM-DD 00:00:00'),
-				end_time: values.end_time.format('YYYY-MM-DD 00:00:00'),
+				start_time: values.start_time.format( 'YYYY-MM-DD 00:00:00' ),
+				end_time: values.end_time.format( 'YYYY-MM-DD 00:00:00' ),
 			};
 
 			// attempt to create a new post
-			const r = makeApiAction('items', 'POST', null, submitValues);
+			makeApiAction( 'items', 'POST', null, submitValues ).then(
+				r => {
+					// on success, update the roadmap
+					const items = [...this.state.items];
+					items.push( {
+						...values,
+						id: r,
+						start_time: moment( values.start_time ).format( 'x' ),
+						end_time: moment( values.end_time ).format( 'x' ),
+					} );
+					this.setState( { items } );
+				}
+			);
 
-			// TODO: only add to roadmap if API call success
-			console.log( 'api response', r );
 
-			// on success, update the roadmap
-			const items = [...this.state.items];
-			items.push({
-				...values,
-				id: this.state.items.length + 1,
-				start_time: moment(values.start_time).format('x'),
-				end_time: moment(values.end_time).format('x'),
-			});
 
-			this.setState( { items } );
-
-		}, 1000);
+		}, 1000 );
 	}
 
-
 	componentDidMount() {
-		makeApiAction('projects', 'GET')
+		makeApiAction( 'projects', 'GET' )
 			.then( response => response.json() )
 			.then( groups => this.setState( { groups } ) )
 			.then( groupOptions => this.setState( {
@@ -150,7 +167,7 @@ export class Roadmap extends Component {
 				} )
 			} ) );
 
-		makeApiAction('items', 'GET')
+		makeApiAction( 'items', 'GET' )
 			.then( response => response.json() )
 			.then( items => this.setState( {
 				items: items.map( item => {
@@ -173,8 +190,9 @@ export class Roadmap extends Component {
 				<Timeline
 					groups={this.state.groups}
 					items={this.state.items}
+					itemRenderer={this.itemRenderer}
 					traditionalZoom={false}
-					canResize={true}
+					canResize={'both'}
 					defaultTimeStart={this.props.viewStart}
 					defaultTimeEnd={this.props.viewEnd}
 					onItemMove={this.handleItemMove}
