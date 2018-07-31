@@ -26,6 +26,7 @@ class App extends Abstract_Plugin {
 		do_action( get_called_class() . '_before_init' );
 		do_action( get_called_class() . '_after_init' );
 		add_action( 'wp_enqueue_scripts', array( get_called_class(), 'enqueue_scripts' ), 20 );
+		new Display();
 	}
 
 	public function authenticated_init() {

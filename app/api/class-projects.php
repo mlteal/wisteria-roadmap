@@ -12,7 +12,7 @@ class Projects extends \WP_REST_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->namespace, $this->rest_base, array(
+		register_rest_route( $this->namespace, '(?P<roadmap_id>[\d]+)/' . $this->rest_base, array(
 			'methods'  => 'GET',
 			'callback' => array( $this, 'get_items' ),
 			'permission_callback' => array( $this, 'get_items_permissions_check' ),

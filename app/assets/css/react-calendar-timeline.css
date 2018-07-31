@@ -278,7 +278,7 @@
 .react-calendar-timeline .rct-today {
 	position: absolute;
 	width: 2px;
-	background: red;
+	background: #ff8c1f;
 	z-index: 50;
 }
 

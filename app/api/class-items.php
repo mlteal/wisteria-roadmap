@@ -25,7 +25,7 @@ class Items extends \WP_REST_Posts_Controller {
 	}
 
 	public function register_routes() {
-		register_rest_route( $this->namespace, $this->rest_base, array(
+		register_rest_route( $this->namespace, '(?P<roadmap_id>[\d]+)/' . $this->rest_base, array(
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_items' ),
@@ -72,10 +72,23 @@ class Items extends \WP_REST_Posts_Controller {
 	}
 
 	public function get_items( $request ) {
+		$url_params = $request->get_url_params();
+
+		if ( empty( $url_params['roadmap_id'] ) ) {
+			return new \WP_Error( 422, 'Missing required parameters' );
+		}
+
 		$response = [];
 		$args     = array(
 			'post_type'      => Cpt::CPT_SLUG,
 			'posts_per_page' => 1000,
+			'tax_query'      => array(
+				array(
+					'taxonomy' => CPT::ROADMAP_TAX_SLUG,
+					'field'    => 'term_id',
+					'terms'    => (int) $url_params['roadmap_id'],
+				),
+			),
 		);
 
 		/** @var \WP_Query $items */
@@ -100,8 +113,8 @@ class Items extends \WP_REST_Posts_Controller {
 				$start = new \DateTime( $start_time );
 				$end   = new \DateTime( $end_time );
 			} catch ( \Exception $e ) {
-				error_log( 'item start time ' . $item->ID . ': ' . var_export( $start_time, true ) );
-				error_log( 'item end time ' . $item->ID . ': ' . var_export( $end_time, true ) );
+				error_log( 'bad item start time ' . $item->ID . ': ' . var_export( $start_time, true ) );
+				error_log( 'bad item end time ' . $item->ID . ': ' . var_export( $end_time, true ) );
 
 				continue;
 			}
@@ -131,7 +144,6 @@ class Items extends \WP_REST_Posts_Controller {
 	 * @return true|\WP_Error True if the request has read access, \WP_Error object otherwise.
 	 */
 	public function get_items_permissions_check( $request ) {
-
 		$post_type = get_post_type_object( $this->post_type );
 
 		if ( ! current_user_can( $post_type->cap->read ) ) {
@@ -191,6 +203,12 @@ class Items extends \WP_REST_Posts_Controller {
 	 * @return \WP_Error|\WP_REST_Request
 	 */
 	public function create_item( $request ) {
+		$url_params = $request->get_url_params();
+
+		if ( empty( $url_params['roadmap_id'] ) ) {
+			return new \WP_Error( 422, 'Missing required parameters' );
+		}
+
 		$body = json_decode( $request->get_body(), true );
 
 		if (
@@ -225,6 +243,12 @@ class Items extends \WP_REST_Posts_Controller {
 
 		if ( empty( $post_id ) ) {
 			return new \WP_Error( 400, 'There was an error creating the item.' );
+		}
+
+		$terms = wp_set_post_terms( $post_id, array( $url_params['roadmap_id'] ), Cpt::ROADMAP_TAX_SLUG );
+
+		if ( is_wp_error( $terms ) ) {
+			return new \WP_Error( 400, 'There was an error adding the item to a project.' );
 		}
 
 		$terms = wp_set_post_terms( $post_id, array( $body['group'] ), Cpt::PROJECT_TAX_SLUG );
