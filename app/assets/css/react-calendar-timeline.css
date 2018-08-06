@@ -28,15 +28,8 @@
 	font-size: 12px;
 	color: white;
 	cursor: pointer;
-	background: #2196f3;
-	border: 1px solid #1a6fb3;
 	z-index: 80;
-}
-
-.react-calendar-timeline .rct-item.selected {
-	background: #ffc107;
-	border: 1px solid #ff9800;
-	z-index: 82;
+	min-width: 18px;
 }
 
 .react-calendar-timeline .rct-item.selected.can-move {
@@ -94,24 +87,106 @@
 	left: 0px;
 	overflow: hidden;
 	display: inline-block;
-	border-radius: 2px;
 	left: 0;
-	padding: 0 6px;
 	height: 100%;
 }
 
-.wrm-timeline-item .wrm-item-content {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
+.rct-sidebar-row .wrm-sidebar-item {
+	background: #7855cb;
+}
+.rct-sidebar-row .wrm-sidebar-item .wrm-project-title {
+	color: #ffffff;
+	font-weight: bold;
+	padding: 6px;
+}
+
+.rct-item .wrm-timeline-item {
+	background: #7855cb;
+	border: 1px solid #543b8e;
+	border-left-width: 2px;
+	border-right-width: 2px;
+	color: #ffffff;
+}
+
+.rct-item .wrm-timeline-item {
 	height: 100%;
+	display: block;
+	border-radius: 6px;
+	padding: 6px;
+}
+
+.rct-sidebar-row .wrm-sidebar-item.project-1,
+.rct-sidebar-row .wrm-sidebar-item.project-6,
+.rct-sidebar-row .wrm-sidebar-item.project-11,
+.rct-sidebar-row .wrm-sidebar-item.project-6 {
+	background: #0BA897;
+}
+.rct-item .wrm-timeline-item.group-1,
+.rct-item .wrm-timeline-item.group-6,
+.rct-item .wrm-timeline-item.group-11,
+.rct-item .wrm-timeline-item.group-16 {
+	 background: #0BA897;
+	 border-color: #08766a;
+ }
+
+.rct-sidebar-row .wrm-sidebar-item.project-2,
+.rct-sidebar-row .wrm-sidebar-item.project-7,
+.rct-sidebar-row .wrm-sidebar-item.project-12,
+.rct-sidebar-row .wrm-sidebar-item.project-17 {
+	background: #F0693C;
+}
+.rct-item .wrm-timeline-item.group-2,
+.rct-item .wrm-timeline-item.group-7,
+.rct-item .wrm-timeline-item.group-12,
+.rct-item .wrm-timeline-item.group-17 {
+	background: #F0693C;
+	border-color: #a64929;
+}
+
+.rct-sidebar-row .wrm-sidebar-item.project-3,
+.rct-sidebar-row .wrm-sidebar-item.project-8,
+.rct-sidebar-row .wrm-sidebar-item.project-13,
+.rct-sidebar-row .wrm-sidebar-item.project-18 {
+	background: #69A952;
+}
+.rct-item .wrm-timeline-item.group-3,
+.rct-item .wrm-timeline-item.group-8,
+.rct-item .wrm-timeline-item.group-13,
+.rct-item .wrm-timeline-item.group-18 {
+	background: #69A952;
+	border-color: #538541;
+}
+
+.rct-sidebar-row .wrm-sidebar-item.project-4,
+.rct-sidebar-row .wrm-sidebar-item.project-9,
+.rct-sidebar-row .wrm-sidebar-item.project-14,
+.rct-sidebar-row .wrm-sidebar-item.project-19 {
+	background: #D93075;
+}
+.rct-item .wrm-timeline-item.group-4,
+.rct-item .wrm-timeline-item.group-9,
+.rct-item .wrm-timeline-item.group-14,
+.rct-item .wrm-timeline-item.group-19 {
+	 background: #D93075;
+	 border-color: #7c1b43;
+ }
+
+.rct-item.selected .wrm-timeline-item {
+	background: #f9cd2d;
+	border-color: #93791b;
+	color: #333333;
+	z-index: 82;
+}
+
+.wrm-timeline-item .wrm-item-content {
+	position: relative;
 }
 
 .wrm-timeline-item .wrm-item-content .wrm-item-title {
 	position: absolute;
 	top: 0;
 	left: 0;
+	line-height: 1.4em;
 }
 
 .wrm-timeline-item .wrm-item-content.item-small {
@@ -126,10 +201,11 @@
 .wrm-percent-complete {
 	display: block;
 	height: 100%;
-	background: #203578;
+	background: rgba(0,0,0,.2);
 	position: absolute;
 	top: 0;
 	left: 0;
+	border-radius: 6px;
 }
 
 .react-calendar-timeline .rct-header-container {
@@ -229,7 +305,6 @@
 }
 
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {
-	padding: 0 4px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -238,11 +313,11 @@
 	border-bottom: 1px solid #bbbbbb;
 }
 
-.react-calendar-timeline .rct-sidebar .rct-sidebar-row.rct-sidebar-row-odd {
+.react-calendar-timeline .rct-sidebar .rct-sidebar-row rct-sidebar-row-odd {
 	background: rgba(0, 0, 0, 0.05);
 }
 
-.react-calendar-timeline .rct-sidebar .rct-sidebar-row.rct-sidebar-row-even {
+.react-calendar-timeline .rct-sidebar .rct-sidebar-row rct-sidebar-row-even {
 	background: transparent;
 }
 

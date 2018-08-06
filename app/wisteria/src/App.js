@@ -6,7 +6,7 @@ class App extends Component {
   render() {
 
       const viewStart = moment().subtract(2, 'week');
-      const viewEnd = moment().add(5, 'month');
+      const viewEnd = moment().add(3, 'month');
 
     return (
       <div className="App">

@@ -22,6 +22,25 @@ export class Roadmap extends Component {
 		},
 	};
 
+	getObjectIndex(array, attr, value) {
+		for(var i = 0; i < array.length; i += 1) {
+			if(array[i][attr] === value) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	groupRenderer = ({ group }) => {
+		console.log(group)
+		const groupIndex = this.getObjectIndex(this.state.groups, 'id', group.id);
+		return (
+			<div className={'wrm-sidebar-item project-' + groupIndex}>
+				<span className="wrm-project-title">{group.title}</span>
+			</div>
+		)
+	}
+
 	itemRenderer = ( { item, timelineContext } ) => {
 		// const { timelineWidth, visibleTimeStart, visibleTimeEnd } = timelineContext;
 		const { visibleTimeStart, visibleTimeEnd } = timelineContext;
@@ -30,8 +49,11 @@ export class Roadmap extends Component {
 		const itemDays = (item.end_time - item.start_time)/86400000;
 		const showSmallVersion = daysVisible > 120 && itemDays < 14 ? true : false;
 
+		// Grab the index of the group item
+		const groupIndex = this.getObjectIndex(this.state.groups, 'id', item.group);
+
 		return (
-			<div className='wrm-timeline-item'>
+			<div className={'wrm-timeline-item group-' + groupIndex}>
 				<span className="wrm-percent-complete" style={{
 					width:`${item.percent_complete}%`,
 				}}></span>
@@ -190,6 +212,7 @@ export class Roadmap extends Component {
 				<Timeline
 					groups={this.state.groups}
 					items={this.state.items}
+					groupRenderer={this.groupRenderer}
 					itemRenderer={this.itemRenderer}
 					traditionalZoom={false}
 					canResize={'both'}
@@ -202,6 +225,14 @@ export class Roadmap extends Component {
 					stackItems={true}
 					itemHeightRatio={.98}
 					lineHeight={45}
+					steps={{
+						second: 86400,
+						minute: 1440,
+						hour: 24,
+						day: 1,
+						month: 1,
+						year: 1
+					}}
 				/>
 				<NewItemForm
 					groupOptions={this.state.groupOptions}

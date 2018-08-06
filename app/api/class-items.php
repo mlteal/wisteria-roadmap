@@ -110,13 +110,20 @@ class Items extends \WP_REST_Posts_Controller {
 
 			// In case we somehow recorded a bad date ¯\_(ツ)_/¯ skip it?
 			try {
-				$start = new \DateTime( $start_time );
-				$end   = new \DateTime( $end_time );
+				$start_time = new \DateTime( $start_time );
+				$start_time = $start_time->getTimestamp();
+				$end_time   = new \DateTime( $end_time );
+				$end_time   = $end_time->getTimestamp();
 			} catch ( \Exception $e ) {
 				error_log( 'bad item start time ' . $item->ID . ': ' . var_export( $start_time, true ) );
 				error_log( 'bad item end time ' . $item->ID . ': ' . var_export( $end_time, true ) );
 
 				continue;
+			}
+
+			// Only display items that are at least a day or more so it can be appropriately managed
+			if ( $end_time - $start_time < 86400 ) {
+				$end_time = $start_time + 86400;
 			}
 
 
@@ -126,8 +133,8 @@ class Items extends \WP_REST_Posts_Controller {
 				'title'            => str_replace( '"', "'", html_entity_decode( esc_html( $item->post_title ), ENT_QUOTES ) ),
 				'description'      => str_replace( '"', "'", html_entity_decode( esc_html( $item->post_content ), ENT_QUOTES ) ),
 				'percent_complete' => $percent_complete,
-				'start_time'       => $start->getTimestamp(),
-				'end_time'         => $end->getTimestamp(),
+				'start_time'       => $start_time,
+				'end_time'         => $end_time,
 			);
 		}
 
