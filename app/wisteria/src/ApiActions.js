@@ -37,7 +37,7 @@ export default function makeApiAction( endpoint = 'items', requestType, itemId =
 					.catch( e => alert( 'Fail! That API item creation didn\'t go through. Refresh the page please.' ) )
 			} else if ( 'PATCH' === requestType ) {
 				// Update an item
-				const url = API_ROOT + '/' + window.wrm_roadmap.roadmap_id + '/items/' + itemId;
+				const url = API_ROOT + '/items/' + itemId;
 				const updateParams = {
 					...params,
 					start_time: params.start_time / 1000,
