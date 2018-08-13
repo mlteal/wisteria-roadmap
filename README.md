@@ -29,6 +29,12 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.3
+
+- Allow item percent complete to be updated via frontend
+- Prep API's for ability to edit items right via the frontend roadmap view
+- Update CSS styles, some minor JS code organization (it's still a mess with components flying everywhere)
+
 ### 0.1.2
 
 - Fix: include empty Roadmap taxonomies in Project Term management meta form
