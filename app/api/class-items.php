@@ -268,6 +268,10 @@ class Items extends \WP_REST_Posts_Controller {
 	}
 
 	/**
+	 * Required params: `id`
+	 *
+	 * Optional params: `title`, `group`, `start_time`, `end_time`, `percent_complete`, `description`
+	 *
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Request
@@ -291,28 +295,42 @@ class Items extends \WP_REST_Posts_Controller {
 			return new \WP_Error( 422, 'Missing required parameters' );
 		}
 
-		if ( isset( $body['title'] ) && $body['title'] != $post->post_title ) {
-			$post->post_title = $body['title'];
+		if ( ! empty( $body['title'] ) || isset( $body['description'] ) ) {
+			if ( $body['title'] != $post->post_title ) {
+				$post->post_title = $body['title'];
+			}
+
+			if ( isset( $body['description'] ) ) {
+				$post->post_content = esc_attr( $body['description'] );
+				$post->post_content_filtered = esc_attr( $body['description'] );
+			}
 
 			wp_update_post( $post );
 		}
 
-		$post_terms   = wp_get_post_terms( $post->ID, Cpt::PROJECT_TAX_SLUG );
-		$current_term = ! empty( $post_terms[0]->term_id ) ? $post_terms[0]->term_id : 0;
+		if ( isset( $body['group'] ) ) {
+			$post_terms   = wp_get_post_terms( $post->ID, Cpt::PROJECT_TAX_SLUG );
+			$current_term = ! empty( $post_terms[0]->term_id ) ? $post_terms[0]->term_id : 0;
 
-		if ( isset( $body['group'] ) && ( empty( $current_term ) || $body['group'] !== $current_term ) ) {
+			if ( ( empty( $current_term ) || $body['group'] !== $current_term ) ) {
 
-			wp_set_post_terms( $post->ID, array( $body['group'] ), Cpt::PROJECT_TAX_SLUG );
+				wp_set_post_terms( $post->ID, array( $body['group'] ), Cpt::PROJECT_TAX_SLUG );
 
-			// attempt to unset current term
-			if ( ! empty( $current_term ) ) {
-				wp_remove_object_terms( $post->ID, $current_term, Cpt::PROJECT_TAX_SLUG );
+				// attempt to unset current term
+				if ( ! empty( $current_term ) ) {
+					wp_remove_object_terms( $post->ID, $current_term, Cpt::PROJECT_TAX_SLUG );
+				}
 			}
 		}
 
-		// TODO: Verify that start and end times are valid, sensible dates before updating
-		Meta::update_start_time( (int) $url_params['id'], $body['start_time'] );
-		Meta::update_end_time( (int) $url_params['id'], $body['end_time'] );
+
+		if ( ! empty( $body['start_time'] ) ) {
+			Meta::update_start_time( (int) $url_params['id'], $body['start_time'] );
+		}
+		if ( ! empty( $body['end_time'] ) ) {
+			Meta::update_end_time( (int) $url_params['id'], $body['end_time'] );
+		}
+
 		Meta::update_percent_complete( (int) $url_params['id'], $body['percent_complete'] );
 
 		return new \WP_REST_Response( null, 200 );

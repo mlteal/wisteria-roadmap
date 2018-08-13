@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import makeApiAction from "../ApiActions";
 import NewItemForm from "./NewItemForm";
 import moment from 'moment';
+import {RoadmapItem} from './RoadmapItem';
+import {getObjectIndex} from "../Utilities";
 
 export class Roadmap extends Component {
 	static propTypes = {
@@ -22,42 +24,33 @@ export class Roadmap extends Component {
 		},
 	};
 
-	getObjectIndex(array, attr, value) {
-		for(var i = 0; i < array.length; i += 1) {
-			if(array[i][attr] === value) {
-				return i;
-			}
-		}
-		return -1;
+	handlePercentChange = (item, value) => {
+		const itemIndex = getObjectIndex(this.state.items, 'id', item.id)
+		const newItems = [...this.state.items];
+		newItems[ itemIndex ] = {
+			...item,
+			percent_complete: value
+		};
+
+		makeApiAction( 'items', 'PATCH', item.id, {percent_complete: value} ).then(
+			this.setState({ items: newItems })
+		);
 	}
 
-	groupRenderer = ({ group }) => {
-		console.log(group)
-		const groupIndex = this.getObjectIndex(this.state.groups, 'id', group.id);
+	itemRenderer = ( item, timelineContext ) => {
+		return RoadmapItem( {
+			item: item.item,
+			timelineContext,
+			groups: this.state.groups,
+			handlePercentChange: this.handlePercentChange
+		} )
+	}
+
+	groupRenderer = ( { group } ) => {
+		const groupIndex = getObjectIndex( this.state.groups, 'id', group.id );
 		return (
 			<div className={'wrm-sidebar-item project-' + groupIndex}>
 				<span className="wrm-project-title">{group.title}</span>
-			</div>
-		)
-	}
-
-	itemRenderer = ( { item, timelineContext } ) => {
-		// const { timelineWidth, visibleTimeStart, visibleTimeEnd } = timelineContext;
-		const { visibleTimeStart, visibleTimeEnd } = timelineContext;
-		const daysVisible = (visibleTimeEnd-visibleTimeStart)/86400000;
-		// If we're zoomed in enough, we can adjust the display accordingly
-		const itemDays = (item.end_time - item.start_time)/86400000;
-		const showSmallVersion = daysVisible > 120 && itemDays < 14 ? true : false;
-
-		// Grab the index of the group item
-		const groupIndex = this.getObjectIndex(this.state.groups, 'id', item.group);
-
-		return (
-			<div className={'wrm-timeline-item group-' + groupIndex}>
-				<span className="wrm-percent-complete" style={{
-					width:`${item.percent_complete}%`,
-				}}></span>
-				<div className={'wrm-item-content' + (showSmallVersion ? ' item-small' : ' item-large')}><span className='wrm-item-title'>{item.title}</span></div>
 			</div>
 		)
 	}
@@ -169,17 +162,14 @@ export class Roadmap extends Component {
 				}
 			);
 
-
-
 		}, 1000 );
 	}
 
 	componentDidMount() {
 		makeApiAction( 'projects', 'GET' )
 			.then( response => response.json() )
-			.then( groups => this.setState( { groups } ) )
-			.then( groupOptions => this.setState( {
-				groupOptions: this.state.groups.map( group => {
+			.then( groups => {
+				const groupOptions = groups.map( group => {
 					var rGroup = {
 						label: group.title,
 						value: group.id,
@@ -187,7 +177,10 @@ export class Roadmap extends Component {
 
 					return rGroup;
 				} )
-			} ) );
+
+				this.setState( { groups, groupOptions } );
+
+			} );
 
 		makeApiAction( 'items', 'GET' )
 			.then( response => response.json() )

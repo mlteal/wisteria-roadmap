@@ -94,6 +94,7 @@
 .rct-sidebar-row .wrm-sidebar-item {
 	background: #7855cb;
 }
+
 .rct-sidebar-row .wrm-sidebar-item .wrm-project-title {
 	color: #ffffff;
 	font-weight: bold;
@@ -119,27 +120,29 @@
 .rct-sidebar-row .wrm-sidebar-item.project-6,
 .rct-sidebar-row .wrm-sidebar-item.project-11,
 .rct-sidebar-row .wrm-sidebar-item.project-6 {
-	background: #0BA897;
+	background: #0ba897;
 }
+
 .rct-item .wrm-timeline-item.group-1,
 .rct-item .wrm-timeline-item.group-6,
 .rct-item .wrm-timeline-item.group-11,
 .rct-item .wrm-timeline-item.group-16 {
-	 background: #0BA897;
-	 border-color: #08766a;
- }
+	background: #0ba897;
+	border-color: #08766a;
+}
 
 .rct-sidebar-row .wrm-sidebar-item.project-2,
 .rct-sidebar-row .wrm-sidebar-item.project-7,
 .rct-sidebar-row .wrm-sidebar-item.project-12,
 .rct-sidebar-row .wrm-sidebar-item.project-17 {
-	background: #F0693C;
+	background: #f0693c;
 }
+
 .rct-item .wrm-timeline-item.group-2,
 .rct-item .wrm-timeline-item.group-7,
 .rct-item .wrm-timeline-item.group-12,
 .rct-item .wrm-timeline-item.group-17 {
-	background: #F0693C;
+	background: #f0693c;
 	border-color: #a64929;
 }
 
@@ -147,13 +150,14 @@
 .rct-sidebar-row .wrm-sidebar-item.project-8,
 .rct-sidebar-row .wrm-sidebar-item.project-13,
 .rct-sidebar-row .wrm-sidebar-item.project-18 {
-	background: #69A952;
+	background: #69a952;
 }
+
 .rct-item .wrm-timeline-item.group-3,
 .rct-item .wrm-timeline-item.group-8,
 .rct-item .wrm-timeline-item.group-13,
 .rct-item .wrm-timeline-item.group-18 {
-	background: #69A952;
+	background: #69a952;
 	border-color: #538541;
 }
 
@@ -161,15 +165,16 @@
 .rct-sidebar-row .wrm-sidebar-item.project-9,
 .rct-sidebar-row .wrm-sidebar-item.project-14,
 .rct-sidebar-row .wrm-sidebar-item.project-19 {
-	background: #D93075;
+	background: #d93075;
 }
+
 .rct-item .wrm-timeline-item.group-4,
 .rct-item .wrm-timeline-item.group-9,
 .rct-item .wrm-timeline-item.group-14,
 .rct-item .wrm-timeline-item.group-19 {
-	 background: #D93075;
-	 border-color: #7c1b43;
- }
+	background: #d93075;
+	border-color: #7c1b43;
+}
 
 .rct-item.selected .wrm-timeline-item {
 	background: #f9cd2d;
@@ -201,7 +206,7 @@
 .wrm-percent-complete {
 	display: block;
 	height: 100%;
-	background: rgba(0,0,0,.2);
+	background: rgba(0, 0, 0, .2);
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -374,4 +379,118 @@
 	font-size: 20px;
 	border-radius: 5px;
 	z-index: 85;
+}
+
+/**
+WRM Item Details
+ */
+.rct-item .wrm-item-details {
+	display: none;
+}
+
+/**
+Range slider styles
+ */
+
+.wrm-percent-complete-slider {
+	bottom: 7px;
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+.rangeslider {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+
+.rangeslider .rangeslider__fill {
+	display: block;
+	height: 100%;
+	top: 0;
+}
+
+
+.rangeslider .rangeslider__handle {
+	cursor: pointer;
+	display: inline-block;
+	position: absolute;
+	width: 15px;
+	height: 12px;
+	top: 50%;
+	transform: translate3d(-50%, -50%, 0);
+}
+
+.rangeslider .rangeslider__handle:focus {
+	outline: none;
+}
+
+.rangeslider .rangeslider__handle .rangeslider__active {
+	opacity: 1
+}
+
+.rangeslider .rangeslider__handle-tooltip {
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	position: absolute;
+	background-color: rgba(0, 0, 0, .8);
+	font-weight: 400;
+	font-size: 12px;
+	transition: all .1s ease-in;
+	border-radius: 4px;
+	display: inline-block;
+	color: #ffffff;
+	left: 50%;
+	transform: translate3d(-50%, 0, 0);
+	top: -25px;
+}
+
+.rangeslider .rangeslider__handle-tooltip span {
+	margin-top: 12px;
+	display: inline-block;
+	line-height: 100%
+}
+
+.rangeslider .rangeslider__handle-tooltip:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+	border-top: 8px solid rgba(0, 0, 0, .8);
+	left: 50%;
+	bottom: -8px;
+	transform: translate3d(-50%, 0, 0);
+}
+
+.rangeslider-horizontal .rangeslider__handle:after {
+	content: '\27A1';
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	top: 0;
+	left: 0;
+	color: rgba(6, 1, 11, 0.64);
+	font-size: 22px;
+	line-height: 12px;
+}
+
+.rangeslider__labels {
+	position: relative
+}
+
+.rangeslider__labels .rangeslider__label-item {
+	position: absolute;
+	font-size: 14px;
+	cursor: pointer;
+	display: inline-block;
+	top: 10px;
+	transform: translate3d(-50%, 0, 0)
+}
+
+
+.rct-item.selected .rangeslider {
+	display: none;
 }

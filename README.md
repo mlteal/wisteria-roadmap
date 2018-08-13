@@ -29,6 +29,10 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.2
+
+- Fix: include empty Roadmap taxonomies in Project Term management meta form
+
 ### 0.1.1
 
 - Add some color beautifucation on the frontend. Stylesheet 

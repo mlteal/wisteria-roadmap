@@ -34,6 +34,7 @@ class Term_Meta {
 
 		$roadmaps = get_terms( array(
 			'taxonomy' => CPT::ROADMAP_TAX_SLUG,
+			'hide_empty' => false,
 		) );
 
 		if ( empty( $roadmaps ) ) {

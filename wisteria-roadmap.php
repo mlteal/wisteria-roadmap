@@ -4,7 +4,7 @@
  * Author: mlteal
  * Plugin URI: https://github.com/mlteal/wisteria-roadmap
  * Text Domain: ml-wrm
- * Version: 0.1.1
+ * Version: 0.1.2
  */
 
 //avoid direct calls to this file, because now WP core and framework has been used
