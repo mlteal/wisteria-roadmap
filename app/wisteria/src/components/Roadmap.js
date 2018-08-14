@@ -32,9 +32,13 @@ export class Roadmap extends Component {
 			percent_complete: value
 		};
 
-		makeApiAction( 'items', 'PATCH', item.id, {percent_complete: value} ).then(
-			this.setState({ items: newItems })
-		);
+		this.setState({ items: newItems })
+	}
+
+	savePercentChange = (item) => {
+		const key = getObjectIndex(this.state.items, 'id', item.id);
+		const itemFromState = {...this.state.items[key]}
+		makeApiAction( 'items', 'PATCH', itemFromState.id, {percent_complete: itemFromState.percent_complete} );
 	}
 
 	itemRenderer = ( item, timelineContext ) => {
@@ -42,7 +46,8 @@ export class Roadmap extends Component {
 			item: item.item,
 			timelineContext,
 			groups: this.state.groups,
-			handlePercentChange: this.handlePercentChange
+			handlePercentChange: this.handlePercentChange,
+			savePercentChange: this.savePercentChange
 		} )
 	}
 
@@ -198,7 +203,7 @@ export class Roadmap extends Component {
 							end_time: moment( values.end_time ).format( 'x' ),
 						};
 					}
-					
+
 					this.setState( { items: updateItems } );
 				}
 			).then(

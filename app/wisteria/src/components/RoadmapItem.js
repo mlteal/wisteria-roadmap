@@ -3,7 +3,7 @@ import React from 'react';
 import {getObjectIndex} from "../Utilities";
 import Slider from 'react-rangeslider';
 
-export const RoadmapItem = ( { item, timelineContext, groups, handlePercentChange } ) => {
+export const RoadmapItem = ( { item, timelineContext, groups, handlePercentChange, savePercentChange } ) => {
 
 	// const { timelineWidth, visibleTimeStart, visibleTimeEnd } = timelineContext;
 	const { visibleTimeStart, visibleTimeEnd } = timelineContext;
@@ -28,6 +28,7 @@ export const RoadmapItem = ( { item, timelineContext, groups, handlePercentChang
 					max={100}
 					value={parseInt( item.percent_complete, 10 )}
 					onChange={( value ) => handlePercentChange( item, value )}
+					onChangeComplete={() => savePercentChange( item )}
 					tooltip={false}
 				/>
 			</div>
