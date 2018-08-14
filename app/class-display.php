@@ -23,6 +23,7 @@ class Display {
 <div id="wisteria-roadmap">
 	Wisteria App Loading
 </div>
+<div id="wisteria-modal"></div>
 <script type="text/javascript">
 	var wrm_roadmap = {
 		roadmap_id: {$roadmap->term_id},

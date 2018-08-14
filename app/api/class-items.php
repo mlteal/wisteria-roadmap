@@ -233,8 +233,8 @@ class Items extends \WP_REST_Posts_Controller {
 		$percent_complete = isset( $body['percent_complete'] ) ? (int) $body['percent_complete'] : 0;
 		$post_args        = array(
 			'post_author'           => get_current_user_id(), // TODO: Capture the currently logged in user for author
-			'post_content'          => '',
-			'post_content_filtered' => '',
+			'post_content'          => $body['description'] ?: '',
+			'post_content_filtered' => $body['description'] ?: '',
 			'post_title'            => $body['title'],
 			'post_status'           => 'publish',
 			'post_type'             => Cpt::CPT_SLUG,

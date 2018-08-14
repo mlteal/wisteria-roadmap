@@ -28,7 +28,7 @@ export default function makeApiAction( endpoint = 'items', requestType, itemId =
 	switch ( endpoint ) {
 		case 'items':
 			// Create a new item
-			if ( 'POST' === requestType && itemId == null ) {
+			if ( 'POST' === requestType && ( null === itemId || 0 === itemId ) ) {
 				const url = API_ROOT + '/' + ROADMAP_ID + '/items/';
 
 				// Default options are marked with *

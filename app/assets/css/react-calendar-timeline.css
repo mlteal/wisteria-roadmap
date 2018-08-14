@@ -415,7 +415,7 @@ Range slider styles
 	cursor: pointer;
 	display: inline-block;
 	position: absolute;
-	width: 15px;
+	width: 21px;
 	height: 12px;
 	top: 50%;
 	transform: translate3d(-50%, -50%, 0);
@@ -466,14 +466,14 @@ Range slider styles
 }
 
 .rangeslider-horizontal .rangeslider__handle:after {
-	content: '\27A1';
+	content: '\1F34D';
 	position: absolute;
-	width: 12px;
+	width: 16px;
 	height: 12px;
 	top: 0;
 	left: 0;
-	color: rgba(6, 1, 11, 0.64);
-	font-size: 22px;
+	color: #000000;
+	font-size: 20px;
 	line-height: 12px;
 }
 
@@ -493,4 +493,27 @@ Range slider styles
 
 .rct-item.selected .rangeslider {
 	display: none;
+}
+
+/**
+Add New Item form/modal
+ */
+.wisteria-modal {
+	position: absolute;
+	background: rgba(0,0,0,.3);
+	z-index: 9000;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: -9000px;
+}
+
+.wisteria-modal:empty {
+	display: none;
+}
+
+.wisteria-modal .modal-close {
+	position: relative;
+	right: 0;
+	top: 0;
 }

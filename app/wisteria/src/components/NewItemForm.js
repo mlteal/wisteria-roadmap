@@ -9,20 +9,23 @@ import 'react-virtualized-select/styles.css';
 export class NewItemForm extends Component {
 	static propTypes = {
 		handleRoadmapSubmit: PropTypes.func,
+		handleClose: PropTypes.func,
 		groupOptions: PropTypes.array,
-		modalStatus: PropTypes.object,
+		item: PropTypes.object,
 	};
 
 	defaultState = {
 		title: "",
-		group: { value: 7 },
+		groupValue: 7,
 		start_time: moment().add( 1, 'week' ),
 		end_time: moment().add( 2, 'week' ),
 		description: "",
 		percent_complete: 0,
-		modalStatus: {
-			isVisible: false,
-		},
+		scrollPosition: 0,
+		isSubmitting: false,
+		newItem: true,
+		id: 0,
+		key: 0,
 	};
 
 	state = {
@@ -35,8 +38,8 @@ export class NewItemForm extends Component {
 		let value = target.value;
 
 		// Ensure start and end times are set as moment values
-		if ('start_time' === name || 'end_time' === name) {
-			value = moment(value);
+		if ( 'start_time' === name || 'end_time' === name ) {
+			value = moment( value );
 		}
 
 		this.setState( {
@@ -45,43 +48,65 @@ export class NewItemForm extends Component {
 	}
 
 	handleSubmit = ( event ) => {
+		event.preventDefault();
+		this.setState( { isSubmitting: true } );
 		const values = {
 			...this.state,
-			group: this.state.group.value,
+			group: this.state.groupValue,
+			newItem: this.state.newItem,
+			id: this.state.id,
+			key: this.state.key,
 		}
-		this.props.handleRoadmapSubmit( event, values )
-		event.preventDefault();
-	}
 
-	handleClose = ( event ) => {
-		console.log( 'handle close event' );
-		const modalStatus = { ...this.state.modalStatus }
-
-		console.log( 'initial state check', modalStatus.isVisible );
-
-		modalStatus.isVisible = !modalStatus.isVisible;
-		console.log( 'update string', modalStatus.isVisible );
-
-		this.setState( {
-			modalStatus: {
-				isVisible: true
-			}
-		}, function() {
-			console.log( 'after setting', this.state.modalStatus.isVisible );
-		} );
+		this.props.handleRoadmapSubmit( event, values );
 	}
 
 	componentDidMount() {
+		const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+		this.setState( {
+			scrollPosition: scrollPosition,
+			newItem: this.props.item.newItem,
+		} )
 
+		if ( this.props.item.group > 0 ) {
+			this.setState( { groupValue: this.props.item.group } )
+		}
+
+		if ( this.props.item.newItem ) {
+			if ( this.props.item.start_time > 0 ) {
+				this.setState( { start_time: this.props.item.start_time } );
+				if ( this.props.item.end_time > 0 ) {
+					this.setState( { end_time: this.props.item.end_time } );
+				} else {
+					// go ahead and set a default end time if there isn't one set
+					this.setState( { end_time: moment( this.props.item.start_time ).add( 2, 'week' ) } );
+				}
+			}
+		} else {
+			this.setState({
+				title: this.props.item.title,
+				description: this.props.item.description,
+				start_time: this.props.item.start_time,
+				end_time: this.props.item.start_time,
+				groupValue: this.props.item.group,
+				percent_complete: this.props.item.percent_complete,
+				id: this.props.item.id,
+				key: this.props.item.key,
+			})
+		}
 	}
 
 	render() {
 		return (
-			<div className='section'>
+			<div className='wisteria-modal section' style={{
+				top: this.state.scrollPosition
+			}}>
 				<div className='container'>
 					<section className="message is-primary">
 						<div className='message-header'>
 							Add New Item
+							<button className="modal-close is-large" aria-label="close"
+									onClick={this.props.handleClose}></button>
 						</div>
 						<div className="message-body">
 							<form className="content" onSubmit={this.handleSubmit}>
@@ -142,9 +167,9 @@ export class NewItemForm extends Component {
 											<div className="control">
 												<VirtualizedSelect
 													name="group"
-													value={this.state.group.value}
+													value={this.state.groupValue}
 													options={this.props.groupOptions}
-													onChange={( group ) => this.setState( { group } )}
+													onChange={( group ) => this.setState( { groupValue: group.value } )}
 												/>
 											</div>
 										</div>
@@ -182,12 +207,13 @@ export class NewItemForm extends Component {
 										</div>
 									</div>
 								</div>
-								<button type="submit" className="btn btn-outline-primary" disabled={this.isSubmitting}>
-									{this.isSubmitting ? 'Wait plz' : 'Submit'}
+								<button type="submit"
+										className={this.state.isSubmitting ? 'button is-warning' : 'button is-primary'}
+										disabled={this.state.isSubmitting}>
+									{this.state.isSubmitting ? 'Wait plz' : 'Submit'}
 								</button>
 							</form>
 						</div>
-						<button className="modal-close is-large" aria-label="close" onClick={this.handleClose}></button>
 					</section>
 				</div>
 			</div>

@@ -29,6 +29,10 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.4
+
+- 🍍
+
 ### 0.1.3
 
 - Allow item percent complete to be updated via frontend

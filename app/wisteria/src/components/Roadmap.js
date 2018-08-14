@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import Timeline from 'react-calendar-timeline/lib';
 import PropTypes from 'prop-types';
 import makeApiAction from "../ApiActions";
-import NewItemForm from "./NewItemForm";
 import moment from 'moment';
 import {RoadmapItem} from './RoadmapItem';
 import {getObjectIndex} from "../Utilities";
+import Modal from './Modal';
+import NewItemForm from "./NewItemForm";
 
 export class Roadmap extends Component {
 	static propTypes = {
@@ -19,9 +20,8 @@ export class Roadmap extends Component {
 		formatted: 0,
 		groupOptions: [],
 		itemFormValues: [],
-		newItemModal: {
-			isVisible: false,
-		},
+		modalVisible: false,
+		modalProps: {}
 	};
 
 	handlePercentChange = (item, value) => {
@@ -81,20 +81,41 @@ export class Roadmap extends Component {
 		makeApiAction( 'items', 'PATCH', itemId, updated );
 	}
 
-	handleNewItemModal = ( group, time, e ) => {
-		// const { items } = this.state;
+	/**
+	 *
+	 * @param group If it's a new item, ID if it's an existing
+	 * @param timeOrE time If new item, Event if editing existing
+	 * @param eOrTime Event if new, Time if existing
+	 */
+	handleNewItemModal = ( groupOrId, timeOrE, eOrTime ) => {
+		if ('object' === typeof(timeOrE)) {
+			const itemKey = getObjectIndex(this.state.items, 'id', groupOrId);
+			const existingItem = this.state.items[itemKey];
+			this.setState({
+				modalVisible: true,
+				modalProps: {
+					newItem: false,
+					e: timeOrE,
+					key: itemKey,
+					...existingItem
+				}
+			});
+		} else {
+			// create a new item
+			this.setState({
+				modalVisible: true,
+				modalProps: {
+					newItem: true,
+					group: groupOrId,
+					start_time: timeOrE,
+					e: eOrTime,
+				}
+			});
+		}
+	}
 
-		const newItemModal = { ...this.state.newItemModal }
-
-		console.log( 'initial state check', newItemModal.isVisible );
-
-		newItemModal.isVisible = true;
-		console.log( 'update string', newItemModal.isVisible );
-
-		this.setState( this.state.newItemModal, function() {
-			console.log( 'after setting', this.state.newItemModal.isVisible );
-		} );
-
+	handleModalClose = (e) => {
+		this.setState({modalVisible: false});
 	}
 
 	handleItemResize = ( itemId, time, edge ) => {
@@ -140,26 +161,48 @@ export class Roadmap extends Component {
 	}
 
 	handleFormSubmit = ( event, values ) => {
+		event.preventDefault();
+
 		setTimeout( () => {
 			const submitValues = {
 				...values,
-				start_time: values.start_time.format( 'YYYY-MM-DD 00:00:00' ),
-				end_time: values.end_time.format( 'YYYY-MM-DD 00:00:00' ),
+				start_time: moment(values.start_time).format( 'YYYY-MM-DD 00:00:00' ),
+				end_time: moment(values.end_time).format( 'YYYY-MM-DD 00:00:00' ),
 			};
 
+			const postOrPatch = submitValues.newItem ? 'POST' : 'PATCH';
+
+			console.log(this.state.items);
+
 			// attempt to create a new post
-			makeApiAction( 'items', 'POST', null, submitValues ).then(
+			makeApiAction( 'items', postOrPatch, submitValues.id, submitValues ).then(
 				r => {
 					// on success, update the roadmap
-					const items = [...this.state.items];
-					items.push( {
-						...values,
-						id: r,
-						start_time: moment( values.start_time ).format( 'x' ),
-						end_time: moment( values.end_time ).format( 'x' ),
-					} );
-					this.setState( { items } );
+					var updateItems = [...this.state.items];
+					if (submitValues.newItem) {
+						updateItems.push( {
+							...values,
+							id: r,
+							start_time: moment( values.start_time ).format( 'x' ),
+							end_time: moment( values.end_time ).format( 'x' ),
+						} );
+					} else {
+						updateItems[submitValues.key] = {
+							...this.state.items[submitValues.key],
+							description: values.description,
+							group: values.group,
+							id: values.id,
+							percent_complete: values.percent_complete,
+							title: values.title,
+							start_time: moment( values.start_time ).format( 'x' ),
+							end_time: moment( values.end_time ).format( 'x' ),
+						};
+					}
+					
+					this.setState( { items: updateItems } );
 				}
+			).then(
+				this.setState({modalVisible: false})
 			);
 
 		}, 1000 );
@@ -213,6 +256,7 @@ export class Roadmap extends Component {
 					defaultTimeEnd={this.props.viewEnd}
 					onItemMove={this.handleItemMove}
 					onItemResize={this.handleItemResize}
+					onItemDoubleClick={this.handleNewItemModal}
 					onCanvasDoubleClick={this.handleNewItemModal}
 					onItemContextMenu={this.handleItemDelete}
 					stackItems={true}
@@ -227,12 +271,12 @@ export class Roadmap extends Component {
 						year: 1
 					}}
 				/>
-				<NewItemForm
+				{!this.state.modalVisible || <Modal><NewItemForm
+					item={this.state.modalProps}
 					groupOptions={this.state.groupOptions}
 					handleRoadmapSubmit={this.handleFormSubmit}
-					modalStatus={this.state.newItemModal}
-					// newItemPreselections={this.state.newItem}
-				/>
+					handleClose={this.handleModalClose}
+				/></Modal>}
 			</div>
 		);
 	}
