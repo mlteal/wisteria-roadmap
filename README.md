@@ -32,6 +32,7 @@ basics to get you started:
 ### 0.1.4
 
 - 🍍
+- Frontend item management (add/update via modal) is here and mostly works!
 
 ### 0.1.3
 

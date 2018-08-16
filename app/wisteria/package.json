@@ -1,6 +1,6 @@
 {
   "name": "wisteria",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "homepage": "http://github.com/mlteal/wisteria-roadmap",
   "private": true,
   "dependencies": {
