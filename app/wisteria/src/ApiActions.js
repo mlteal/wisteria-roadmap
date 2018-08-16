@@ -50,8 +50,7 @@ export default function makeApiAction( endpoint = 'items', requestType, itemId =
 			} else if ( 'DELETE' === requestType ) {
 				const url = API_ROOT + '/items/' + itemId;
 				return authFetch( url, 'DELETE', JSON.stringify( params ) )
-					.then( response => response.json() ) // parses response to JSON
-					.catch( e => console.log( 'DELETE item:', 'It\'s possible that API update might not have go through. That said, this catch is finicky at the moment so YMMV ¯\\_(ツ)_/¯' ) )
+					.catch( e => console.log( 'DELETE item:', 'It\'s possible that API update might not have go through ¯\\_(ツ)_/¯', e ) )
 			} else {
 				// Grab the list of items
 				const url = API_ROOT + '/' + ROADMAP_ID + '/items/';

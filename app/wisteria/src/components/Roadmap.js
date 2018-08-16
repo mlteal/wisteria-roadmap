@@ -177,32 +177,22 @@ export class Roadmap extends Component {
 
 			const postOrPatch = submitValues.newItem ? 'POST' : 'PATCH';
 
-			console.log(this.state.items);
-
 			// attempt to create a new post
 			makeApiAction( 'items', postOrPatch, submitValues.id, submitValues ).then(
 				r => {
 					// on success, update the roadmap
-					var updateItems = [...this.state.items];
-					if (submitValues.newItem) {
-						updateItems.push( {
-							...values,
-							id: r,
-							start_time: moment( values.start_time ).format( 'x' ),
-							end_time: moment( values.end_time ).format( 'x' ),
-						} );
-					} else {
-						updateItems[submitValues.key] = {
-							...this.state.items[submitValues.key],
-							description: values.description,
-							group: values.group,
-							id: values.id,
-							percent_complete: values.percent_complete,
-							title: values.title,
-							start_time: moment( values.start_time ).format( 'x' ),
-							end_time: moment( values.end_time ).format( 'x' ),
-						};
+					const  updateItems = [...this.state.items];
+					if (!submitValues.newItem) {
+						updateItems.splice(submitValues.key, 1);
 					}
+
+					updateItems.push( {
+						...values,
+						id: r,
+						// use submitValues because they're definitely already moments
+						start_time: moment( submitValues.start_time ).format( 'x' ),
+						end_time: moment( submitValues.end_time ).format( 'x' ),
+					} );
 
 					this.setState( { items: updateItems } );
 				}

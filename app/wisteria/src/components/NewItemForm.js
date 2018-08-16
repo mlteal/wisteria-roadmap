@@ -86,8 +86,8 @@ export class NewItemForm extends Component {
 			this.setState({
 				title: this.props.item.title,
 				description: this.props.item.description,
-				start_time: this.props.item.start_time,
-				end_time: this.props.item.start_time,
+				start_time: moment(this.props.item.start_time),
+				end_time: moment(this.props.item.end_time),
 				groupValue: this.props.item.group,
 				percent_complete: this.props.item.percent_complete,
 				id: this.props.item.id,
