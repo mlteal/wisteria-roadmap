@@ -29,6 +29,13 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.5
+
+- Bugfix: new items no longer disappear from UI due to broken 
+  dates when dragged/moved immediately after creation
+- The new item modal now closes on `esc` keypress instead of 
+  having to hit the close button
+
 ### 0.1.4
 
 - 🍍

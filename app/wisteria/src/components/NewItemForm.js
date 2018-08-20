@@ -94,6 +94,13 @@ export class NewItemForm extends Component {
 				key: this.props.item.key,
 			})
 		}
+
+		// listen for the escape key
+		document.addEventListener('keydown', this.props.handleClose, false);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.props.handleClose, false);
 	}
 
 	render() {

@@ -120,7 +120,12 @@ export class Roadmap extends Component {
 	}
 
 	handleModalClose = (e) => {
-		this.setState({modalVisible: false});
+		// close on escape key or close button click
+		if (!e.keyCode || 27 === e.keyCode) {
+			this.setState({modalVisible: false});
+		}
+
+		return;
 	}
 
 	handleItemResize = ( itemId, time, edge ) => {
@@ -190,8 +195,8 @@ export class Roadmap extends Component {
 						...values,
 						id: r,
 						// use submitValues because they're definitely already moments
-						start_time: moment( submitValues.start_time ).format( 'x' ),
-						end_time: moment( submitValues.end_time ).format( 'x' ),
+						start_time: parseInt(moment( submitValues.start_time ).format( 'x' ), 10),
+						end_time: parseInt(moment( submitValues.end_time ).format( 'x' ), 10),
 					} );
 
 					this.setState( { items: updateItems } );
