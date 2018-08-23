@@ -99,10 +99,10 @@ export class Roadmap extends Component {
 			this.setState({
 				modalVisible: true,
 				modalProps: {
+					...existingItem,
 					newItem: false,
 					e: timeOrE,
 					key: itemKey,
-					...existingItem
 				}
 			});
 		} else {

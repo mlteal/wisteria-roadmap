@@ -29,6 +29,11 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.6
+
+- Bugfix: new items can now be edited immediately after creation
+- Bugfix: possible add_action ordering on API endpoints
+
 ### 0.1.5
 
 - Bugfix: new items no longer disappear from UI due to broken 

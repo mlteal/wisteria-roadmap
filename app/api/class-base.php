@@ -6,11 +6,15 @@ class Base {
 	const NAMESPACE = 'wisteria/v1';
 
 	public function __construct() {
+		add_action( 'rest_api_init', array($this, 'init') );
+
 		/**
 		 * Only from certain origins
 		 */
 		add_action( 'rest_api_init', array($this, 'access_control'), 15 );
+	}
 
+	public function init() {
 		$items = new Items();
 		$items->register_routes();
 		$projects = new Projects();
@@ -18,7 +22,6 @@ class Base {
 	}
 
 	public function access_control() {
-
 		remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 		add_filter( 'rest_pre_serve_request', function( $value ) {
 
