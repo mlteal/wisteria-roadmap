@@ -333,7 +333,7 @@ class Items extends \WP_REST_Posts_Controller {
 
 		Meta::update_percent_complete( (int) $url_params['id'], $body['percent_complete'] );
 
-		return new \WP_REST_Response( null, 200 );
+		return new \WP_REST_Response( $url_params['id'], 200 );
 	}
 
 	/**

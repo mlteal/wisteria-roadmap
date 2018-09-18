@@ -29,6 +29,11 @@ basics to get you started:
 
 # Release Notes
 
+### 0.1.7
+
+- Bugfix: items poof on description update
+- bugfix: adjust js handling of item delete
+
 ### 0.1.6
 
 - Bugfix: new items can now be edited immediately after creation

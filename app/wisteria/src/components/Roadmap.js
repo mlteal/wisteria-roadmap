@@ -154,11 +154,9 @@ export class Roadmap extends Component {
 
 	handleItemDelete = ( itemId ) => {
 		if ( window.confirm( 'Are you sure you want to delete?' ) ) {
-			// TODO: don't delete on API delete failure!
-			makeApiAction( 'items', 'DELETE', itemId );
-
 			const { items } = this.state;
 
+			makeApiAction( 'items', 'DELETE', itemId ).then(
 			this.setState( {
 				items: items.map(
 					item =>
@@ -166,7 +164,8 @@ export class Roadmap extends Component {
 							? {}
 							: item
 				)
-			} );
+			} )
+			);
 		}
 	}
 
