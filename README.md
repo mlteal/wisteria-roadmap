@@ -67,7 +67,7 @@ basics to get you started:
   and class names are definitely not set in stone, so if you're 
   making tweaks beware.
 - Set a minimum item width and minimum display time period (one day). 
-  Items that are smaller than a day are tough to resize ¯\_(ツ)_/¯
+  Items that are smaller than a day are tough to resize ¯\\_(ツ)_/¯
 
 ### 0.1.0
 
