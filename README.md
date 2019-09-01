@@ -43,8 +43,10 @@ groupings within.
 
 For local JS development, you'll want to run `npm install` from
 the `app/wisteria` directory. Use `npm start` to utilize hot reloading
-while developing, and `npm build` to build a final product that you can
-commit. #TODO: add CI with a build process ;)
+while developing, and `npm run-script build` to create a production build
+that should be commited before a release is tagged.
+
+#TODO: add CI with a build process :)
 
 To ensure you're using the correct scripts while developing, it's
 recommended that you set `WP_DEBUG` to true in your local environment.

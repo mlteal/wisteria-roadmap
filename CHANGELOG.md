@@ -1,3 +1,8 @@
+### 0.1.8
+
+- Update js packages and rebuild React app
+- Update Readme and add changelog
+
 ### 0.1.7
 
 - Bugfix: items poof on description update
